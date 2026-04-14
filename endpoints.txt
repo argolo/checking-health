@@ -1,0 +1,5 @@
+# Success example
+google.com
+
+# Error example
+google.comm
