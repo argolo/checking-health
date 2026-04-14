@@ -3,13 +3,13 @@
 HTTP/HTTPS endpoint healthcheck.
 
 Usage:
-    python healthcheck.py endpoints.txt
-    python healthcheck.py endpoints.txt --timeout 5
+    checking-health endpoints.txt
+    checking-health endpoints.txt --timeout 5
 
-Format of the file:
+Input file format:
     https://patient.b2b.kompa.com.br/health
-    https://api.exemplo.com/status
-    api2.exemplo.com/health
+    https://api.example.com/status
+    api2.example.com/health
 """
 
 from __future__ import annotations
@@ -26,7 +26,6 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 
-# ANSI escape codes
 RESET = "\033[0m"
 BOLD = "\033[1m"
 DIM = "\033[2m"
@@ -99,8 +98,8 @@ def extract_domain(url: str) -> str:
 def load_endpoints(file_path: str) -> List[str]:
     endpoints: List[str] = []
 
-    with open(file_path, "r", encoding="utf-8") as f:
-        for line in f:
+    with open(file_path, "r", encoding="utf-8") as file:
+        for line in file:
             value = line.strip()
             if not value or value.startswith("#"):
                 continue
@@ -146,7 +145,7 @@ def perform_check(url: str, timeout: float) -> CheckResult:
     request = urllib.request.Request(
         normalized_url,
         headers={
-            "User-Agent": "HealthCheckUtility/1.0",
+            "User-Agent": "CheckingHealth/1.0",
             "Accept": "*/*",
         },
         method="GET",
@@ -155,7 +154,7 @@ def perform_check(url: str, timeout: float) -> CheckResult:
     start_total = time.perf_counter()
 
     try:
-        # Server response time
+        # Time until the server starts responding.
         start_request = time.perf_counter()
         with urllib.request.urlopen(request, timeout=timeout) as response:
             request_time_ms = int((time.perf_counter() - start_request) * 1000)
@@ -163,7 +162,7 @@ def perform_check(url: str, timeout: float) -> CheckResult:
             http_code = response.getcode()
             content_type = response.headers.get("Content-Type", "-")
 
-            # Reads the complete body for TIME to reflect the actual download
+            # Read the full body so total time includes the download.
             body = response.read()
             download_size = len(body)
 
@@ -171,9 +170,7 @@ def perform_check(url: str, timeout: float) -> CheckResult:
             if content_type and "text/html" in content_type.lower():
                 title = extract_title(body)
 
-        # Total time of the operation, including download
         elapsed_ms = int((time.perf_counter() - start_total) * 1000)
-
         ok = 200 <= http_code < 400
 
         return CheckResult(
@@ -252,7 +249,7 @@ def perform_check(url: str, timeout: float) -> CheckResult:
 
 def print_banner() -> None:
     print()
-    print(bold(colorize("API HEALTHCHECK", CYAN)))
+    print(bold(colorize("CHECKING HEALTH", CYAN)))
     print(dim("HTTP/HTTPS endpoint availability check"))
     print()
 
@@ -313,7 +310,7 @@ def print_summary(results: List[CheckResult]) -> None:
     avg_total = int(sum(item.elapsed_ms for item in results) / total) if total else 0
 
     print()
-    print(bold("Resumo"))
+    print(bold("Summary"))
     print(dim("-" * 30))
     print(f"Total        : {total}")
     print(
@@ -333,7 +330,7 @@ def print_summary(results: List[CheckResult]) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Performs a health check on a list of HTTP/HTTPS endpoints."
+        description="Perform a health check on a list of HTTP/HTTPS endpoints."
     )
     parser.add_argument(
         "file",
@@ -369,7 +366,6 @@ def main() -> int:
 
     results: List[CheckResult] = []
 
-    # Displays each result as soon as the request finishes.
     for endpoint in endpoints:
         result = perform_check(endpoint, timeout=args.timeout)
         results.append(result)
