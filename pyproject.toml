@@ -14,7 +14,7 @@ authors = [
 ]
 
 [project.scripts]
-release-clean = "checking_health:main"
+checking-health = "checking_health:main"
 
 [tool.setuptools]
 py-modules = ["checking_health"]
