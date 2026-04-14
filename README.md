@@ -1,45 +1,45 @@
 # Checking Health
 
-CLI para execução de **healthcheck em múltiplos endpoints HTTP/HTTPS**, com saída rica, colorida e orientada a diagnóstico.
+**Checking Health** is a command-line tool for performing HTTP/HTTPS endpoint health checks with clean, real-time, and highly readable output.
+
+It helps you quickly validate APIs, services, and environments with useful diagnostics like latency, response size, content type, and more.
 
 ---
 
 ## ✨ Features
 
-* ✅ Execução sequencial com **feedback em tempo real**
-* 🌐 Suporte a múltiplos endpoints via arquivo
-* 🎯 Identificação do tipo de endpoint (`TYPE`) baseada na URL
-* 📊 Métricas detalhadas por requisição:
+* ⚡ Real-time execution (results printed as they complete)
+* 🎯 Endpoint identification via URL path (`TYPE`)
+* 📊 Rich metrics per request:
 
   * Status (OK / FAIL)
-  * Código HTTP
-  * Domain
-  * IP
+  * HTTP status code
+  * Domain & IP
   * Content-Type
-  * Tamanho do download
-  * Tempo de resposta (`REQ`)
-  * Tempo total (`TIME`)
-  * Title (quando HTML)
-* 🎨 Saída colorida (verde/vermelho)
-* 📈 Resumo final com métricas agregadas
-* 🧪 Testável com `pytest`
+  * Response size
+  * Request time (`REQ`)
+  * Total time (`TIME`)
+  * HTML `<title>` (when available)
+* 🎨 Clean and colorful terminal output
+* 📈 Summary with aggregated metrics
+* 🧪 Fully testable with `pytest`
+* 📦 Distributed via PyPI
 
 ---
 
-## 📦 Instalação
+## 📦 Installation
 
-Instale diretamente do PyPI:
+Install directly from PyPI:
 
 ```bash
 pip install checking-health
 ```
 
-🔗 Projeto no PyPI:
-[https://pypi.org/project/checking-health](https://pypi.org/project/checking-health)
+🔗 https://pypi.org/project/checking-health
 
 ---
 
-## ▶️ Uso
+## ▶️ Usage
 
 ```bash
 checking-health endpoints.txt --timeout 3
@@ -47,41 +47,52 @@ checking-health endpoints.txt --timeout 3
 
 ---
 
-## 📄 Formato do arquivo de entrada
+## 📄 Input File Format
 
-Arquivo `.txt` com **uma URL por linha**:
+Provide a `.txt` file with one endpoint per line:
 
 ```txt
-https://google.com/health
-https://api.exemplo.com/status
-api.interna.local/metrics
+# success example
+google.com
+
+# failure example
+google.comm
+
+https://api.example.com/status
 ```
 
-Regras:
+### Rules
 
-* Linhas vazias são ignoradas
-* Linhas iniciadas com `#` são ignoradas
-* URLs sem esquema recebem `https://` automaticamente
+* Empty lines are ignored
+* Lines starting with `#` are ignored
+* URLs without scheme default to `https://`
 
 ---
 
-## 📊 Exemplo de saída
+## 📊 Example Output
 
 ```txt
-TYPE         STATUS   HTTP   DOMAIN                IP              CONTENT-TYPE        SIZE     REQ(ms)  TIME(ms)  TITLE
----------------------------------------------------------------------------------------------------------------------------
-healthcheck  OK       200    google.com.br         142.250.0.1     text/html           14.2KB        23        41  Google
-status       OK       200    api.exemplo.com       10.0.0.1        application/json      512B        18        19  -
-metrics      FAIL     -      api.interna.local     -               -                       0B        10        10  -
+TYPE         STATUS   HTTP   DOMAIN                                   IP              CONTENT-TYPE        SIZE   REQ(ms)  TIME(ms)  TITLE
+-------------------------------------------------------------------------------------------------------------------------------
+health       OK       200    google.com                               142.250.191.78  text/html           17.4KB       31        53  Google
+status       FAIL     -      google.comm                              -               -                    0B          14        14  -
+
+Summary
+------------------------------
+Total        : 2
+Success      : 1
+Failure      : 1
+REQ average  : 22ms
+TIME average : 33ms
 ```
 
 ---
 
-## 🧠 Conceitos importantes
+## 🧠 Concepts
 
 ### TYPE
 
-Último segmento da URL:
+Derived from the last segment of the URL path:
 
 | URL                   | TYPE          |
 | --------------------- | ------------- |
@@ -93,83 +104,59 @@ metrics      FAIL     -      api.interna.local     -               -            
 
 ### REQ(ms)
 
-Tempo até o servidor responder (latência).
+Time until the server starts responding (latency).
 
 ---
 
 ### TIME(ms)
 
-Tempo total da requisição, incluindo download do conteúdo.
+Total time including response download.
 
 ---
 
 ### SIZE
 
-Tamanho real baixado (body da resposta).
+Actual size of the response body.
 
 ---
 
 ### TITLE
 
-Extraído do HTML (`<title>`), quando disponível.
+Extracted from HTML responses (`<title>` tag), when available.
 
 ---
 
-## 📈 Resumo final
+## 🔍 Use Cases
 
-```txt
-Resumo
-------------------------------
-Total        : 3
-Success      : 2
-Failure      : 1
-REQ average  : 17ms
-TIME average : 23ms
-```
+* API health validation
+* Deployment smoke tests
+* Environment verification (dev/staging/prod)
+* Quick debugging of network or DNS issues
+* Bulk endpoint checking
 
 ---
 
-## 🧪 Testes
+## ⚠️ Limitations
 
-Instale pytest:
+* Does not break down DNS / TCP / TLS timings
+* Downloads full response body (can impact large responses)
+* Runs sequentially (no parallel execution)
+
+---
+
+## 🧪 Testing
+
+Install pytest:
 
 ```bash
 pip install pytest
 ```
 
-Execute:
+Run tests:
 
 ```bash
 pytest -q
 ```
-
----
-
-## 🔍 Casos de uso
-
-* Monitoramento rápido de APIs
-* Diagnóstico de latência
-* Verificação de ambientes (dev/sandbox/alpha/beta/prod)
-* Debug de problemas DNS / rede / conteúdo
-
----
-
-## ⚠️ Limitações
-
-* Não separa tempo de DNS / TCP / TLS (tempo agregado)
-* Download completo do body pode impactar performance em respostas grandes
-* Execução sequencial (sem paralelismo)
-
----
-
-## 🔮 Possíveis melhorias
-
-* Execução paralela (threads/async)
-* Retry automático
-* Exportação para CSV/JSON
-* Limite de download (`--max-size`)
-* Breakdown detalhado de latência (DNS, TLS, TTFB)
-* Agrupamento por TYPE
 
 ---
 
