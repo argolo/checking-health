@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "checking-health"
+version = "0.0.0"
+description = "HTTP/HTTPS endpoint healthcheck."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+  { name = "Andre Argolo", email = "mail@argolo.dev" }
+]
+
+[project.scripts]
+release-clean = "checking_health:main"
+
+[tool.setuptools]
+py-modules = ["checking_health"]
