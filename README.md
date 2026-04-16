@@ -1,5 +1,17 @@
 # Checking Health
 
+[![CI](https://github.com/argolo/checking-health/actions/workflows/ci.yml/badge.svg)](https://github.com/argolo/checking-health/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/)
+[![License](https://img.shields.io/github/license/argolo/checking-health)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/argolo/checking-health)](https://github.com/argolo/checking-health/commits/main)
+[![Open Issues](https://img.shields.io/github/issues/argolo/checking-health)](https://github.com/argolo/checking-health/issues)
+
+[![PyPI Version](https://img.shields.io/pypi/v/checking-health.svg)](https://pypi.org/project/checking-health/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/checking-health.svg)](https://pypi.org/project/checking-health/)
+[![PyPI](https://badge.fury.io/py/checking-health.svg)](https://pypi.org/project/checking-health/)
+
+
+
 **Checking Health** is a command-line tool for performing HTTP/HTTPS endpoint health checks with clean, real-time, and highly readable output.
 
 It helps you quickly validate APIs, services, and environments with useful diagnostics like latency, response size, content type, and more.
@@ -167,6 +179,12 @@ CTO • Software Architect • DevOps
 
 * 🌐 Website: [https://argolo.dev](https://argolo.dev)
 * 🐙 GitHub: [https://github.com/argolo](https://github.com/argolo)
+
+---
+
+### 🧭 About
+
+André Argôlo is a software architect and technology leader with extensive experience in designing and operating mission-critical systems. His work focuses on building scalable platforms, improving developer experience, and creating pragmatic tooling that balances automation with human control — especially in regulated and high-responsibility environments.
 
 ---
 
